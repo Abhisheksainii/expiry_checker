@@ -1,3 +1,4 @@
+import 'package:expiry_checker/Screens/enterData.dart';
 import 'package:expiry_checker/Screens/homeScreen.dart';
 import 'package:expiry_checker/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +19,10 @@ class MyApp extends StatelessWidget {
         fontFamily: "Poppins",
         primarySwatch: Colors.blue,
       ),
-      initialRoute: Approutes.homescreen,
+      initialRoute: Approutes.datascreen,
       routes: {
         Approutes.homescreen: (context) => HomeScreen(),
+        Approutes.datascreen: (context) => DataScreen(),
       },
     );
   }

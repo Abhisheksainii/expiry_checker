@@ -1,6 +1,7 @@
 import 'package:expiry_checker/utils/common.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:edge_detection/edge_detection.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -66,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: h * 0.04,
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: h * 0.03),
+                        padding: EdgeInsets.only(top: h * 0.02),
                         child: Container(
                           width: w * 0.5,
                           child: TextField(
@@ -75,6 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   borderSide: BorderSide.none),
                               hintText: "Find",
                               hintStyle: TextStyle(
+                                fontSize: w * 0.06,
                                 color: Color(0xFFA4A4A4),
                               ),
                             ),
