@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Poppins",
         primarySwatch: Colors.blue,
       ),
-      initialRoute: Approutes.datascreen,
+      initialRoute: Approutes.homescreen,
       routes: {
         Approutes.homescreen: (context) => HomeScreen(),
         Approutes.datascreen: (context) => DataScreen(),

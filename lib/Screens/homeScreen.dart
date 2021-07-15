@@ -1,5 +1,6 @@
 import 'package:expiry_checker/utils/common.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:edge_detection/edge_detection.dart';
 
@@ -9,6 +10,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? _imagePath;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   List<String> names = ["Name", "Name", "Name", "Name"];
   List<String> time = ["mm/dd/yyyy", "mm/dd/yyyy", "mm/dd/yyyy", "mm/dd/yyyy"];
   List colors = [
@@ -17,6 +24,28 @@ class _HomeScreenState extends State<HomeScreen> {
     Color(0xFFCFDE2A),
     Color(0xFFCFDE2A)
   ];
+
+  Future<void> getImage() async {
+    String? imagePath;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    // We also handle the message potentially returning null.
+    try {
+      imagePath = (await EdgeDetection.detectEdge);
+      print("$imagePath");
+    } on PlatformException {
+      imagePath = 'Failed to get cropped image path.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _imagePath = imagePath;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
@@ -89,55 +118,60 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: h * 0.04,
                 ),
-                Container(
-                  height: h * 0.13,
-                  width: w * 0.85,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0.2, 0.2),
-                        blurRadius: 0.5,
-                      ),
-                    ],
-                    color: Colors.white,
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: w * 0.045),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          Common.assetImages + "add.png",
-                          width: w * 0.17,
-                        ),
-                        SizedBox(
-                          width: w * 0.065,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "New Product",
-                              style: GoogleFonts.poppins(
-                                fontSize: w * 0.05,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                            SizedBox(
-                              height: h * 0.008,
-                            ),
-                            Text(
-                              "Add new",
-                              style: GoogleFonts.poppins(
-                                  color: Color(0xFFA4A4A4),
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: w * 0.04),
-                            ),
-                          ],
+                InkWell(
+                  onTap: () {
+                    getImage();
+                  },
+                  child: Container(
+                    height: h * 0.13,
+                    width: w * 0.85,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(0.2, 0.2),
+                          blurRadius: 0.5,
                         ),
                       ],
+                      color: Colors.white,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: w * 0.045),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            Common.assetImages + "add.png",
+                            width: w * 0.17,
+                          ),
+                          SizedBox(
+                            width: w * 0.065,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "New Product",
+                                style: GoogleFonts.poppins(
+                                  fontSize: w * 0.05,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                              SizedBox(
+                                height: h * 0.008,
+                              ),
+                              Text(
+                                "Add new",
+                                style: GoogleFonts.poppins(
+                                    color: Color(0xFFA4A4A4),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: w * 0.04),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
