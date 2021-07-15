@@ -1,1 +1,3 @@
-class Approutes {}
+class Approutes {
+  static final String homescreen = "/homeScreen";
+}

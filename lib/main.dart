@@ -1,3 +1,5 @@
+import 'package:expiry_checker/Screens/homeScreen.dart';
+import 'package:expiry_checker/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,6 +14,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
+      theme: ThemeData(
+        fontFamily: "Poppins",
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: Approutes.homescreen,
+      routes: {
+        Approutes.homescreen: (context) => HomeScreen(),
+      },
     );
   }
 }
