@@ -308,9 +308,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm:ss.sss")
               .parse(list[index].expdate!);
           DateTime date = DateTime.now();
-          Widget checkexp(DateTime tempDate, DateTime date) {
-            double diff = (tempDate.difference(date).inHours / 24);
-            if (diff <= 0) {
+          Widget checkexp(DateTime to, DateTime from, double d) {
+            from = DateTime(from.year, from.month, from.day);
+            to = DateTime(to.year, to.month, to.day);
+            double diff = (to.difference(from).inHours / 24);
+            print('difffff $diff');
+            if (d <= 0) {
               return Text(
                 "Expired",
                 style: GoogleFonts.poppins(
@@ -329,13 +332,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             }
           }
 
-          Color bordercolor(DateTime from, DateTime to) {
+          Color bordercolor(DateTime from, DateTime to, d) {
             double diff = (to.difference(from).inHours / 24);
-            if (diff <= 0) {
+            int dd = (to.difference(from).inHours / 24).round();
+            if (d <= 0) {
               return Colors.red;
-            } else if (diff > 0 && diff < 1) {
+            } else if (d > 0 && d <= 1) {
               return Color(0xFFFF7F00);
-            } else if (diff >= 1 && diff <= 30) {
+            } else if (d > 1 && d <= 30) {
               return Color(0xFFCFDE2A);
             } else {
               return Colors.green;
@@ -351,7 +355,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               width: w * 0.9,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(18.0),
-                border: Border.all(color: bordercolor(date, tempDate)),
+                border: Border.all(
+                    color: bordercolor(date, tempDate, list[index].diff!)),
                 color: Colors.white,
               ),
               child: Padding(
@@ -388,7 +393,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         SizedBox(
                           height: h * 0.008,
                         ),
-                        checkexp(tempDate, date),
+                        checkexp(tempDate, date, list[index].diff!),
                       ],
                     ),
                   ],

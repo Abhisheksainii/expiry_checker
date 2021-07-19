@@ -6,22 +6,26 @@ class Product {
   String? title;
   String? expdate;
   String? imageUrl;
+  double? diff;
 
   Product({
     this.title,
     this.expdate,
     this.imageUrl,
+    this.diff,
   });
 
   Product.fromMap(Map<String, dynamic> map)
       : title = map['title'],
         expdate = map["expdate"],
-        imageUrl = map['imageUrl'];
+        imageUrl = map['imageUrl'],
+        diff = map['diff'];
 
   updateTitle(title) {
     this.title = title;
     this.expdate = expdate;
     this.imageUrl = imageUrl;
+    this.diff = diff;
   }
 
   Map toMap() {
@@ -29,6 +33,7 @@ class Product {
       'title': title,
       'expdate': expdate,
       'imageUrl': imageUrl,
+      'diff': diff,
     };
   }
 }

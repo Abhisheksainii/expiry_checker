@@ -19,10 +19,11 @@ class DataScreen extends StatefulWidget {
 class _DataScreenState extends State<DataScreen> {
   List<Product> list = <Product>[];
   SharedPreferences? sharedPreferences;
-
+  DateTime noww = DateTime.now();
   TextEditingController? titleController;
   DateTime? expdate;
   List listt = [];
+  double? ddiff;
   @override
   void initState() {
     // TODO: implement initState
@@ -175,10 +176,25 @@ class _DataScreenState extends State<DataScreen> {
                                           onChanged: (date) {
                                         print('change $date');
                                       }, onConfirm: (date) {
+                                        DateTime from;
+                                        DateTime to;
+                                        from = DateTime(
+                                            noww.year, noww.month, noww.day);
+                                        to = DateTime(
+                                            date.year, date.month, date.day);
+                                        double diff =
+                                            (to.difference(from).inHours / 24);
+
+                                        print('diff is $diff');
                                         print('confirm $date');
+                                        print(noww);
+                                        setState(() {
+                                          ddiff = diff;
+                                        });
                                         setState(() {
                                           expdate = date;
                                         });
+                                        print(expdate);
                                       },
                                           currentTime: DateTime.now(),
                                           locale: LocaleType.en);
@@ -232,9 +248,11 @@ class _DataScreenState extends State<DataScreen> {
   void submit() {
     if (titleController!.text != null) {
       addItem(Product(
-          title: titleController!.text,
-          expdate: expdate.toString(),
-          imageUrl: widget.imageUrl));
+        title: titleController!.text,
+        expdate: expdate.toString(),
+        imageUrl: widget.imageUrl,
+        diff: ddiff,
+      ));
       Navigator.pushNamed(context, Approutes.homescreen);
     } else {
       print("eerr");
