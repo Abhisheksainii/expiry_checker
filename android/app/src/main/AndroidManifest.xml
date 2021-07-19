@@ -1,9 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.expiry_checker">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
    <application
+
         android:label="expiry_checker"
+
         android:icon="@mipmap/ic_launcher">
         <activity
+
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
@@ -37,5 +43,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-    </application>
+
+
+    </application  >
+
+
 </manifest>

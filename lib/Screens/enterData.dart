@@ -1,12 +1,43 @@
+import 'dart:convert';
+
+import 'package:expiry_checker/routes/app_routes.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:expiry_checker/Services/product.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class DataScreen extends StatefulWidget {
+  final Product? item;
+  final String? imageUrl;
+  DataScreen({this.item, this.imageUrl});
   @override
   _DataScreenState createState() => _DataScreenState();
 }
 
 class _DataScreenState extends State<DataScreen> {
+  List<Product> list = <Product>[];
+  SharedPreferences? sharedPreferences;
+
+  TextEditingController? titleController;
+  DateTime? expdate;
+  List listt = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+    titleController = new TextEditingController(
+        text: widget.item != null ? widget.item!.title : null);
+    loadSharedPreferencesAndData();
+  }
+
+  void loadSharedPreferencesAndData() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    loadData();
+  }
+
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
@@ -18,12 +49,15 @@ class _DataScreenState extends State<DataScreen> {
             Padding(
               padding: EdgeInsets.only(top: h * 0.1),
               child: Center(
-                child: Text(
-                  "Enter Data",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    color: Color(0xFF0A2135),
-                    fontSize: w * 0.06,
+                child: InkWell(
+                  onTap: () => submit(),
+                  child: Text(
+                    "Enter Data",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      color: Color(0xFF0A2135),
+                      fontSize: w * 0.06,
+                    ),
                   ),
                 ),
               ),
@@ -81,6 +115,7 @@ class _DataScreenState extends State<DataScreen> {
                                   child: Container(
                                     width: w * 0.5,
                                     child: TextField(
+                                      controller: titleController,
                                       decoration: InputDecoration(
                                         enabledBorder: OutlineInputBorder(
                                             borderSide: BorderSide.none),
@@ -131,18 +166,26 @@ class _DataScreenState extends State<DataScreen> {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(top: h * 0.02),
-                                  child: Container(
-                                    width: w * 0.5,
-                                    child: TextField(
-                                      decoration: InputDecoration(
-                                        enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide.none),
-                                        hintText: "mm/dd/yy",
-                                        hintStyle: TextStyle(
-                                          fontSize: w * 0.05,
-                                          color: Color(0xFFA4A4A4),
-                                        ),
-                                      ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      DatePicker.showDatePicker(context,
+                                          showTitleActions: true,
+                                          minTime: DateTime(2021, 04, 1),
+                                          maxTime: DateTime(2022, 04, 1),
+                                          onChanged: (date) {
+                                        print('change $date');
+                                      }, onConfirm: (date) {
+                                        print('confirm $date');
+                                        setState(() {
+                                          expdate = date;
+                                        });
+                                      },
+                                          currentTime: DateTime.now(),
+                                          locale: LocaleType.en);
+                                    },
+                                    child: Container(
+                                      width: w * 0.5,
+                                      child: Text("Click"),
                                     ),
                                   ),
                                 ),
@@ -163,12 +206,15 @@ class _DataScreenState extends State<DataScreen> {
                         color: Color(0xFFCFDE2A),
                       ),
                       child: Center(
-                        child: Text(
-                          "OK",
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: w * 0.05,
-                            fontWeight: FontWeight.w600,
+                        child: InkWell(
+                          onTap: () => submit(),
+                          child: Text(
+                            "OK",
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: w * 0.05,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
@@ -181,5 +227,38 @@ class _DataScreenState extends State<DataScreen> {
         ),
       ),
     );
+  }
+
+  void submit() {
+    if (titleController!.text != null) {
+      addItem(Product(
+          title: titleController!.text,
+          expdate: expdate.toString(),
+          imageUrl: widget.imageUrl));
+      Navigator.pushNamed(context, Approutes.homescreen);
+    } else {
+      print("eerr");
+    }
+  }
+
+  void addItem(Product item) {
+    // Insert an item into the top of our list, on index zero
+    list.insert(0, item);
+    saveData();
+  }
+
+  void loadData() {
+    List<String> listString = sharedPreferences!.getStringList('list')!;
+    if (listString != null) {
+      list =
+          listString.map((item) => Product.fromMap(json.decode(item))).toList();
+      setState(() {});
+    }
+  }
+
+  void saveData() {
+    List<String> stringList =
+        list.map((item) => json.encode(item.toMap())).toList();
+    sharedPreferences!.setStringList('list', stringList);
   }
 }
