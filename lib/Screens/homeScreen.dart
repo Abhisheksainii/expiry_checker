@@ -217,7 +217,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget emptyList() {
-    return Center(child: Text('No items'));
+    return Center(
+        child: Padding(
+      padding: const EdgeInsets.only(top: 40),
+      child: Text('No items'),
+    ));
   }
 
   Widget buildListTile() {
