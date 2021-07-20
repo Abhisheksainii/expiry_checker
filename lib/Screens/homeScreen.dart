@@ -1,4 +1,8 @@
 import 'dart:convert';
+import 'dart:core';
+import 'dart:core';
+import 'dart:core';
+import 'dart:core';
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:expiry_checker/Screens/enterData.dart';
@@ -8,7 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:edge_detection/edge_detection.dart';
 import 'package:expiry_checker/Services/product.dart';
-
+import 'package:expiry_checker/routes/app_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -39,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     Color(0xFFCFDE2A),
     Color(0xFFCFDE2A)
   ];
-
+  DateTime dateTimeNow = DateTime.now();
   Future<void> getImage() async {
     String? imagePath;
     // Platform messages may fail, so we use a try/catch PlatformException.
@@ -47,15 +51,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     try {
       imagePath = (await EdgeDetection.detectEdge);
+
       print("$imagePath");
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return DataScreen(
-          imageUrl: imagePath,
-        );
-      }));
-    } on PlatformException {
-      imagePath = 'Failed to get cropped image path.';
-    }
+    } on PlatformException {}
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
@@ -65,6 +63,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     setState(() {
       _imagePath = imagePath;
     });
+    if (imagePath == null) {
+      Navigator.pushNamed(context, Approutes.homescreen);
+    } else {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return DataScreen(
+          imageUrl: _imagePath,
+        );
+      }));
+    }
   }
 
   @override
@@ -118,15 +125,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.only(top: h * 0.02),
+                          padding: EdgeInsets.only(top: 22),
                           width: w * 0.5,
                           child: TextField(
                             decoration: InputDecoration(
+                              border: InputBorder.none,
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide.none),
                               hintText: "Find",
                               hintStyle: TextStyle(
-                                fontSize: w * 0.06,
+                                fontSize: 18,
                                 color: Color(0xFFA4A4A4),
                               ),
                             ),
@@ -197,6 +205,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                 ),
                 list.isEmpty ? emptyList() : buildListTile(),
+                SizedBox(
+                  height: h * 0.05,
+                ),
               ],
             ),
           ),
@@ -209,92 +220,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Center(child: Text('No items'));
   }
 
-/*
-
-  Widget buildListView(BuildContext context) {
-    return AnimatedList(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      key: animatedListKey,
-      initialItemCount: items.length,
-      itemBuilder: (BuildContext context, int index, animation) {
-        return SizeTransition(
-          sizeFactor: animation,
-          child: buildItem(items[index], index, context),
-        );
-      },
-    );
-  }
-
-  Widget buildItem(Todo item, int index, BuildContext context) {
-    double w = MediaQuery.of(context).size.width;
-    double h = MediaQuery.of(context).size.height;
-    return Dismissible(
-      key: Key('${item.hashCode}'),
-      background: Container(color: Colors.red[700]),
-      onDismissed: (direction) => removeItemFromList(item, index),
-      direction: DismissDirection.startToEnd,
-      child: buildListTilee(item, index, context),
-    );
-  }
-
-  Widget buildListTilee(item, index, BuildContext context) {
-    double w = MediaQuery.of(context).size.width;
-    double h = MediaQuery.of(context).size.height;
-    return ListTile(
-      title: Padding(
-        padding: EdgeInsets.only(right: w * 0.08),
-        child: Container(
-          height: h * 0.13,
-          width: w * 1,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18.0),
-            border: Border.all(color: Colors.red),
-            color: Colors.white,
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(left: w * 0.045),
-            child: Row(
-              children: [
-                Image.asset(
-                  Common.assetImages + "Rectangle.png",
-                  width: w * 0.17,
-                ),
-                SizedBox(
-                  width: w * 0.065,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      items[index].title!,
-                      key: Key('item-$index'),
-                      style: GoogleFonts.poppins(
-                        fontSize: w * 0.05,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    SizedBox(
-                      height: h * 0.008,
-                    ),
-                    Text(
-                      "ff",
-                      style: GoogleFonts.poppins(
-                          color: Color(0xFFA4A4A4),
-                          fontWeight: FontWeight.normal,
-                          fontSize: w * 0.04),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-*/
   Widget buildListTile() {
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
@@ -305,41 +230,63 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         shrinkWrap: true,
         itemCount: list.length,
         itemBuilder: (context, index) {
-          DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm:ss.sss")
-              .parse(list[index].expdate!);
+          //
           DateTime date = DateTime.now();
-          Widget checkexp(DateTime to, DateTime from, double d) {
-            from = DateTime(from.year, from.month, from.day);
-            to = DateTime(to.year, to.month, to.day);
+
+          Widget checkexp(DateTime from, double d, String too) {
+            //  from = DateTime(from.year, from.month, from.day);
+            //  to = DateTime(to.year, to.month, to.day);
+
+            // print('difffff $diff');
+            DateTime to = new DateFormat("yyyy-MM-dd").parse(too);
+            // final differenceInDays = dateTimeNow.difference(dateTimeCreatedAt).inDays;
+
             double diff = (to.difference(from).inHours / 24);
-            print('difffff $diff');
-            if (d <= 0) {
+            int dif = (to.difference(from).inHours / 24).round();
+            if (diff <= 0) {
               return Text(
                 "Expired",
                 style: GoogleFonts.poppins(
                     color: Colors.red,
                     fontWeight: FontWeight.normal,
-                    fontSize: w * 0.04),
+                    fontSize: w * 0.039),
               );
             } else {
-              return Text(
-                list[index].expdate!,
-                style: GoogleFonts.poppins(
-                    color: Color(0xFFA4A4A4),
-                    fontWeight: FontWeight.normal,
-                    fontSize: w * 0.04),
+              return Row(
+                children: [
+                  Text(
+                    DateFormat("MM-dd-yyyy")
+                        .format(DateTime.parse(list[index].expdate.toString())),
+                    style: GoogleFonts.poppins(
+                        color: Color(0xFFA4A4A4),
+                        fontWeight: FontWeight.normal,
+                        fontSize: w * 0.039),
+                  ),
+                  SizedBox(
+                    width: 14,
+                  ),
+                  Text(
+                    "Expire in ${diff.round()} days",
+                    style: GoogleFonts.poppins(
+                        color: Color(0xFFA4A4A4),
+                        fontWeight: FontWeight.normal,
+                        fontSize: w * 0.034),
+                  ),
+                ],
               );
             }
           }
 
-          Color bordercolor(DateTime from, DateTime to, d) {
+          Color bordercolor(DateTime from, d, String too) {
+            // double diff = (to.difference(from).inHours / 24);
+            // int dd = (to.difference(from).inHours / 24).round();
+            DateTime to = new DateFormat("yyyy-MM-dd").parse(too);
             double diff = (to.difference(from).inHours / 24);
-            int dd = (to.difference(from).inHours / 24).round();
-            if (d <= 0) {
+            if (diff <= 0) {
               return Colors.red;
-            } else if (d > 0 && d <= 1) {
+            } else if (diff > 0 && diff <= 1) {
               return Color(0xFFFF7F00);
-            } else if (d > 1 && d <= 30) {
+            } else if (diff > 1 && diff <= 30) {
               return Color(0xFFCFDE2A);
             } else {
               return Colors.green;
@@ -348,7 +295,55 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           return Dismissible(
             key: Key('${list[index].hashCode}'),
-            background: Container(color: Colors.red[700]),
+            background: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    height: 45,
+                    width: 45,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(0.2, 0.2),
+                          blurRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Image.asset(
+                      Common.assetImages + "Image 1.png",
+                      height: 20,
+                      width: 20,
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    height: 45,
+                    width: 45,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          offset: Offset(0.2, 0.2),
+                          blurRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Image.asset(
+                      Common.assetImages + "Image 1.png",
+                      height: 20,
+                      width: 20,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             onDismissed: (direction) => removeItem(list[index]),
             child: Container(
               height: h * 0.13,
@@ -356,7 +351,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(18.0),
                 border: Border.all(
-                    color: bordercolor(date, tempDate, list[index].diff!)),
+                    color: bordercolor(
+                        date, list[index].diff!, list[index].expdate!)),
                 color: Colors.white,
               ),
               child: Padding(
@@ -364,15 +360,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: Row(
                   children: [
                     Container(
+                      height: h * 0.101,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade400,
                         borderRadius: BorderRadius.circular(18.0),
                       ),
-                      child: Image.file(
-                        File(list[index].imageUrl!),
-                        fit: BoxFit.contain,
-                        height: h * 0.101,
-                        width: w * 0.2,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(18.0),
+                        child: Image.file(
+                          File(list[index].imageUrl!),
+                          fit: BoxFit.cover,
+                          height: h * 0.101,
+                          width: w * 0.2,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -393,7 +393,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         SizedBox(
                           height: h * 0.008,
                         ),
-                        checkexp(tempDate, date, list[index].diff!),
+                        checkexp(dateTimeNow, list[index].diff!,
+                            list[index].expdate!),
                       ],
                     ),
                   ],

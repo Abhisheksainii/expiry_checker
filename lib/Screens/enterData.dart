@@ -4,6 +4,7 @@ import 'package:expiry_checker/routes/app_routes.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expiry_checker/Services/product.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -24,6 +25,9 @@ class _DataScreenState extends State<DataScreen> {
   DateTime? expdate;
   List listt = [];
   double? ddiff;
+  String datee = "mm/dd/yyyy";
+  DateTime? from;
+  DateTime? to;
   @override
   void initState() {
     // TODO: implement initState
@@ -118,6 +122,7 @@ class _DataScreenState extends State<DataScreen> {
                                     child: TextField(
                                       controller: titleController,
                                       decoration: InputDecoration(
+                                        border: InputBorder.none,
                                         enabledBorder: OutlineInputBorder(
                                             borderSide: BorderSide.none),
                                         hintText: "Food Name",
@@ -165,43 +170,50 @@ class _DataScreenState extends State<DataScreen> {
                                 SizedBox(
                                   width: w * 0.04,
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: h * 0.02),
-                                  child: InkWell(
-                                    onTap: () {
-                                      DatePicker.showDatePicker(context,
-                                          showTitleActions: true,
-                                          minTime: DateTime(2021, 04, 1),
-                                          maxTime: DateTime(2022, 04, 1),
-                                          onChanged: (date) {
-                                        print('change $date');
-                                      }, onConfirm: (date) {
-                                        DateTime from;
-                                        DateTime to;
+                                InkWell(
+                                  onTap: () {
+                                    DatePicker.showDatePicker(context,
+                                        showTitleActions: true,
+                                        minTime: DateTime(2021, 04, 1),
+                                        maxTime: DateTime(2022, 04, 1),
+                                        onChanged: (date) {
+                                      print('change $date');
+                                    }, onConfirm: (date) {
+                                      setState(() {
                                         from = DateTime(
                                             noww.year, noww.month, noww.day);
                                         to = DateTime(
                                             date.year, date.month, date.day);
                                         double diff =
-                                            (to.difference(from).inHours / 24);
+                                            (to!.difference(from!).inHours /
+                                                24);
 
-                                        print('diff is $diff');
-                                        print('confirm $date');
-                                        print(noww);
-                                        setState(() {
-                                          ddiff = diff;
-                                        });
-                                        setState(() {
-                                          expdate = date;
-                                        });
-                                        print(expdate);
-                                      },
-                                          currentTime: DateTime.now(),
-                                          locale: LocaleType.en);
+                                        ddiff = diff;
+                                        print('to date ${to.toString()}');
+                                      });
+
+                                      setState(() {
+                                        datee = DateFormat("MM-dd-yyyy").format(
+                                            DateTime.parse(to.toString()));
+                                        print("rk ${datee}");
+                                      });
+                                      setState(() {
+                                        expdate = date;
+                                      });
                                     },
-                                    child: Container(
-                                      width: w * 0.5,
-                                      child: Text("Click"),
+                                        currentTime: DateTime.now(),
+                                        locale: LocaleType.en);
+                                  },
+                                  child: Container(
+                                    width: w * 0.5,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(bottom: 0),
+                                      child: Text(
+                                        datee,
+                                        style: TextStyle(
+                                            color: Color(0xFFA4A4A4),
+                                            fontSize: w * 0.05),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -246,7 +258,7 @@ class _DataScreenState extends State<DataScreen> {
   }
 
   void submit() {
-    if (titleController!.text != null) {
+    if (titleController!.text != null && datee != 'mm/dd/yyyy') {
       addItem(Product(
         title: titleController!.text,
         expdate: expdate.toString(),
