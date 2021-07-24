@@ -81,8 +81,11 @@ class _DataScreenState extends State<DataScreen> {
   }
   Future<void> getimagegallery()async {
 final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+ File file = File(gallery!.path);
 setState(() {
-  gallery = image;
+  
+ 
+_imagePath = file.path;
  
 });
 print(_imagePath);
@@ -346,7 +349,7 @@ print(_imagePath);
   void submit() {
     
 
-File file = File(gallery!.path);
+
     if (titleController!.text != null && datee != 'mm/dd/yyyy') {
       addItem(Product(
         title: titleController!.text,
