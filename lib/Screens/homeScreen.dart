@@ -23,7 +23,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   List<Product> list = <Product>[];
   SharedPreferences? sharedPreferences;
-  String? _imagePath;
+  
   @override
   void initState() {
     loadSharedPreferencesAndData();
@@ -44,35 +44,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     Color(0xFFCFDE2A)
   ];
   DateTime dateTimeNow = DateTime.now();
-  Future<void> getImage() async {
-    String? imagePath;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
 
-    try {
-      imagePath = (await EdgeDetection.detectEdge);
-
-      print("$imagePath");
-    } on PlatformException {}
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _imagePath = imagePath;
-    });
-    if (imagePath == null) {
-      Navigator.pushNamed(context, Approutes.homescreen);
-    } else {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return DataScreen(
-          imageUrl: _imagePath,
-        );
-      }));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
                 InkWell(
                   onTap: () {
-                    getImage();
+                   Navigator.pushNamed(context, Approutes.datascreen);
                   },
                   child: Container(
                     height: h * 0.13,
