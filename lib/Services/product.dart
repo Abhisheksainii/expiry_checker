@@ -8,29 +8,29 @@ class Product {
   String? expdate;
   String? imageUrl;
   double? diff;
-  File? gallery;
+  
 
   Product({
     this.title,
     this.expdate,
     this.imageUrl,
     this.diff,
-    this.gallery,
+    
   });
 
   Product.fromMap(Map<String, dynamic> map)
       : title = map['title'],
         expdate = map["expdate"],
         imageUrl = map['imageUrl'],
-        diff = map['diff'],
-        gallery = map['gallery'];
+        diff = map['diff'];
+        
 
   updateTitle(title) {
     this.title = title;
     this.expdate = expdate;
     this.imageUrl = imageUrl;
     this.diff = diff;
-    this.gallery= gallery;
+   
   }
 
   Map toMap() {
@@ -39,7 +39,7 @@ class Product {
       'expdate': expdate,
       'imageUrl': imageUrl,
       'diff': diff,
-      'gallery': gallery,
+     
     };
   }
 }

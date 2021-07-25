@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:expiry_checker/routes/app_routes.dart';
 import 'package:edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expiry_checker/Services/product.dart';
@@ -20,7 +20,7 @@ class DataScreen extends StatefulWidget {
 
 class _DataScreenState extends State<DataScreen> {
   final ImagePicker _picker = ImagePicker();
-  String? _imagePath;
+  String? _imagePath="f";
   List<Product> list = <Product>[];
   SharedPreferences? sharedPreferences;
   DateTime noww = DateTime.now();
@@ -48,7 +48,7 @@ class _DataScreenState extends State<DataScreen> {
   }
 
   Future<void> getImagecamera() async {
-    String? imagePath;
+    String? imagePath="k";
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
 
@@ -81,7 +81,7 @@ class _DataScreenState extends State<DataScreen> {
   }
   Future<void> getimagegallery()async {
 final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
- File file = File(gallery!.path);
+ File file = File(image!.path);
 setState(() {
   
  
@@ -109,7 +109,7 @@ print(_imagePath);
                     child: Text(
                       "Enter Data",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: Color(0xFF0A2135),
                         fontSize: w * 0.06,
                       ),
@@ -141,36 +141,36 @@ print(_imagePath);
                       Container(
                         alignment: Alignment.bottomCenter,
                         child: CircleAvatar(
+                          backgroundImage: FileImage(File(_imagePath??"f")),
                           radius: 55,
+
                           backgroundColor: Colors.grey.shade300,
-                          child: Positioned(
-                            child: Container(
-                              alignment: Alignment.bottomCenter,
-                              child: Row(
-                                children: [
-                                  InkWell(
-                                    onTap: (){
-                                      getImagecamera();
-                                    },
-                                      child: Icon(
-                                    Icons.camera_enhance,
-                                    size: 30,
-                                    color: Colors.grey.shade700,
-                                  ),),
-                                  SizedBox(
-                                    width: 45,
-                                  ),
-                                  InkWell(
-                                    onTap: (){
-                                      getimagegallery();
+                          child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: (){
+                                    getImagecamera();
+                                  },
+                                    child: Icon(
+                                  Icons.camera_enhance,
+                                  size: 30,
+                                   color: Color(0xFFA4A4A4),
+                                ),),
+                                SizedBox(
+                                  width: 45,
+                                ),
+                                InkWell(
+                                  onTap: (){
+                                    getimagegallery();
 
 
-                                    },
-                                    child: Icon(Icons.photo,
-                                        size: 30, color: Colors.grey.shade700),
-                                  ),
-                                ],
-                              ),
+                                  },
+                                  child: Icon(Icons.photo,
+                                      size: 30,  color: Color(0xFFA4A4A4),),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -181,7 +181,7 @@ print(_imagePath);
                           children: [
                             Text(
                               "Name",
-                              style: GoogleFonts.poppins(
+                              style: TextStyle(
                                 color: Color(0xFF545166),
                                 fontWeight: FontWeight.bold,
                                 fontSize: w * 0.06,
@@ -236,7 +236,7 @@ print(_imagePath);
                           children: [
                             Text(
                               "Date",
-                              style: GoogleFonts.poppins(
+                              style: TextStyle(
                                 color: Color(0xFF545166),
                                 fontWeight: FontWeight.bold,
                                 fontSize: w * 0.06,
@@ -326,7 +326,7 @@ print(_imagePath);
                             onTap: () => submit(),
                             child: Text(
                               "OK",
-                              style: GoogleFonts.poppins(
+                              style:TextStyle(
                                 color: Colors.white,
                                 fontSize: w * 0.05,
                                 fontWeight: FontWeight.w600,
@@ -354,7 +354,7 @@ print(_imagePath);
       addItem(Product(
         title: titleController!.text,
         expdate: expdate.toString(),
-        imageUrl: file.path,
+        imageUrl: _imagePath,
         diff: ddiff,
         
       ));

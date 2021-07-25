@@ -9,7 +9,7 @@ import 'package:expiry_checker/Screens/enterData.dart';
 import 'package:expiry_checker/utils/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:edge_detection/edge_detection.dart';
 import 'package:expiry_checker/Services/product.dart';
 import 'package:expiry_checker/routes/app_routes.dart';
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   width: 200,
                   child: Text(
                     "Find your food To Trash",
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontSize: w * 0.07,
                     ),
                   ),
@@ -154,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             children: [
                               Text(
                                 "New Product",
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                   fontSize: w * 0.05,
                                   fontWeight: FontWeight.normal,
                                 ),
@@ -164,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               ),
                               Text(
                                 "Add new",
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                     color: Color(0xFFA4A4A4),
                                     fontWeight: FontWeight.normal,
                                     fontSize: w * 0.04),
@@ -222,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             if (diff <= 0) {
               return Text(
                 "Expired",
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                     color: Colors.red,
                     fontWeight: FontWeight.normal,
                     fontSize: w * 0.039),
@@ -233,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Text(
                     DateFormat("MM-dd-yyyy")
                         .format(DateTime.parse(list[index].expdate.toString())),
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                         color: Color(0xFFA4A4A4),
                         fontWeight: FontWeight.normal,
                         fontSize: w * 0.039),
@@ -243,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                   Text(
                     "Expire in ${diff.round()} days",
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                         color: Color(0xFFA4A4A4),
                         fontWeight: FontWeight.normal,
                         fontSize: w * 0.034),
@@ -361,7 +361,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         Text(
                           list[index].title!,
                           key: Key('item-$index'),
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             fontSize: w * 0.05,
                             fontWeight: FontWeight.normal,
                           ),
